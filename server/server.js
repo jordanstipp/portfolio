@@ -4,10 +4,26 @@ const cors = require("cors");
 const { Server } = require("socket.io");
 
 const app = express();
+
+const allowedOrigins = [process.env.CLIENT_URL, "http://localhost:5173"];
+
 const server = http.createServer(app);
 const io = new Server(server, { cors: { origin: "*" } });
 
-app.use(cors());
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      // allow requests with no origin (e.g. mobile apps, curl)
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.indexOf(origin) === -1) {
+        const msg = `The CORS policy for this site does not allow access from the specified Origin.`;
+        return callback(new Error(msg), false);
+      }
+      return callback(null, true);
+    },
+    credentials: true, // allow session cookies if you need them
+  })
+);
 app.use(express.json());
 
 app.get("/health", (req, res) => res.send("OK"));
