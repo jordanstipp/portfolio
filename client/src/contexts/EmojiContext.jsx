@@ -2,9 +2,7 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
 
 const EmojiContext = createContext();
-const socket = io(
-  import.meta.env.REACT_APP_SERVER_URL || 'http://localhost:4000'
-);
+const socket = io(import.meta.env.VITE_SERVER_URL);
 
 export function EmojiProvider({ children }) {
   const [emojis, setEmojis] = useState([]);
